@@ -1,5 +1,6 @@
 from itertools import permutations
 from typing import List, Dict, Any, Optional
+from math import factorial
 
 from sqlalchemy.orm import Session
 
@@ -78,6 +79,9 @@ def validate_route_points(
         if point not in places:
             return f"Точка '{point}' отсутствует в базе данных."
 
+    if start == finish:
+        return "Начальная и конечная точки не должны совпадать."
+
     return None
 
 
@@ -90,7 +94,7 @@ def get_edge_data(
     Возвращает данные ребра между двумя точками.
 
     Для учебного проекта граф считается неориентированным:
-    Amsterdam -> Utrecht и Utrecht -> Amsterdam имеют одинаковые веса.
+    Moscow -> Paris и Paris -> Moscow имеют одинаковые веса.
     """
 
     if (from_place, to_place) in edges:
@@ -100,9 +104,9 @@ def get_edge_data(
         return edges[(to_place, from_place)]
 
     return {
-        "distance": 999,
-        "time": 999,
-        "cost": 999,
+        "distance": 999999,
+        "time": 999999,
+        "cost": 999999,
         "transport_type": "unknown"
     }
 
@@ -164,6 +168,8 @@ def calculate_preference_score(
 ) -> float:
     """
     Считает совпадение маршрута с интересами пользователя.
+
+    P(R) = matches / possible_matches
     """
 
     if not preferences:
@@ -182,41 +188,115 @@ def calculate_preference_score(
     return round(matches / total_possible_matches, 3)
 
 
+def calculate_diversity_score(
+    route: List[str],
+    places: Dict[str, Dict[str, Any]]
+) -> float:
+    """
+    Считает разнообразие маршрута по категориям.
+
+    Идея:
+    маршрут лучше, если в нём есть разные типы впечатлений:
+    культура, история, море, природа, архитектура, еда и т.д.
+
+    D(R) = unique_categories / all_categories
+    """
+
+    all_categories = set()
+    route_categories = set()
+
+    for place_data in places.values():
+        for category in place_data["categories"]:
+            all_categories.add(category)
+
+    for place_code in route:
+        for category in places[place_code]["categories"]:
+            route_categories.add(category)
+
+    if not all_categories:
+        return 0.0
+
+    return round(len(route_categories) / len(all_categories), 3)
+
+
+def calculate_constraint_penalty(
+    total_time: float,
+    total_cost: float,
+    max_time: float,
+    budget: float
+) -> float:
+    """
+    Считает мягкий штраф за приближение к ограничениям.
+
+    Даже если маршрут укладывается в ограничения, он может быть
+    слишком близко к лимитам. Например, если маршрут использует
+    99% бюджета и 99% времени, это менее устойчивый вариант.
+
+    penalty(R) = 0.5 * time_load + 0.5 * cost_load
+
+    где:
+    time_load = T(R) / T_max
+    cost_load = C(R) / B
+    """
+
+    if max_time <= 0 or budget <= 0:
+        return 1.0
+
+    time_load = min(total_time / max_time, 1)
+    cost_load = min(total_cost / budget, 1)
+
+    penalty = 0.5 * time_load + 0.5 * cost_load
+
+    return round(penalty, 3)
+
+
 def get_weights(priority: str) -> Dict[str, float]:
     """
     Возвращает веса критериев в зависимости от выбранного приоритета.
 
+    Расширенная модель:
+
     Score(R) =
-    w_time * (1 - T_norm) +
-    w_cost * (1 - C_norm) +
-    w_preferences * P_norm +
-    w_rating * Q_norm
+    w_time * (1 - T*) +
+    w_cost * (1 - C*) +
+    w_preferences * P* +
+    w_rating * Q* +
+    w_diversity * D* -
+    lambda_penalty * penalty(R)
     """
 
     weights = {
         "balanced": {
-            "time": 0.30,
-            "cost": 0.25,
-            "preferences": 0.25,
-            "rating": 0.20
+            "time": 0.25,
+            "cost": 0.22,
+            "preferences": 0.23,
+            "rating": 0.18,
+            "diversity": 0.12,
+            "penalty": 0.10
         },
         "fast": {
-            "time": 0.50,
-            "cost": 0.15,
-            "preferences": 0.20,
-            "rating": 0.15
+            "time": 0.43,
+            "cost": 0.14,
+            "preferences": 0.16,
+            "rating": 0.14,
+            "diversity": 0.13,
+            "penalty": 0.10
         },
         "cheap": {
-            "time": 0.15,
-            "cost": 0.50,
-            "preferences": 0.20,
-            "rating": 0.15
+            "time": 0.14,
+            "cost": 0.43,
+            "preferences": 0.16,
+            "rating": 0.14,
+            "diversity": 0.13,
+            "penalty": 0.10
         },
         "preferences": {
-            "time": 0.15,
-            "cost": 0.15,
-            "preferences": 0.50,
-            "rating": 0.20
+            "time": 0.13,
+            "cost": 0.13,
+            "preferences": 0.40,
+            "rating": 0.17,
+            "diversity": 0.17,
+            "penalty": 0.10
         }
     }
 
@@ -226,6 +306,9 @@ def get_weights(priority: str) -> Dict[str, float]:
 def normalize(value: float, min_value: float, max_value: float) -> float:
     """
     Нормализация значения в диапазон от 0 до 1.
+
+    x* = (x - x_min) / (x_max - x_min)
+
     Если все значения одинаковые, возвращается 0.5.
     """
 
@@ -233,6 +316,60 @@ def normalize(value: float, min_value: float, max_value: float) -> float:
         return 0.5
 
     return (value - min_value) / (max_value - min_value)
+
+
+def build_algorithm_info(stops_count: int, generated_routes_count: int) -> Dict[str, Any]:
+    """
+    Возвращает информацию об алгоритмической сложности.
+
+    Для n промежуточных точек полный перебор имеет сложность O(n!).
+    В учебном проекте это допустимо, потому что количество остановок ограничено.
+    """
+
+    theoretical_routes = factorial(stops_count) if stops_count > 0 else 1
+
+    return {
+        "method": "Полный перебор перестановок промежуточных точек",
+        "complexity": "O(n!)",
+        "stops_count": stops_count,
+        "theoretical_routes_count": theoretical_routes,
+        "generated_routes_count": generated_routes_count,
+        "explanation": (
+            "Для малого количества промежуточных точек полный перебор позволяет "
+            "сравнить все возможные порядки посещения и гарантированно выбрать "
+            "лучший маршрут среди допустимых вариантов."
+        )
+    }
+
+
+def build_calculation_explanation(
+    best_route: Dict[str, Any],
+    feasible_routes_count: int,
+    candidate_routes_count: int
+) -> Dict[str, Any]:
+    """
+    Формирует текстовое объяснение результата для защиты проекта.
+    """
+
+    route_text = " -> ".join(best_route["route"])
+    score = best_route["calculation"]["score"]
+    score_percent = best_route["calculation"]["score_percent"]
+
+    return {
+        "selected_route": route_text,
+        "reason": (
+            f"Маршрут '{route_text}' выбран, потому что он имеет максимальное "
+            f"значение целевой функции Score(R) = {score} среди всех допустимых маршрутов."
+        ),
+        "candidate_routes_count": candidate_routes_count,
+        "feasible_routes_count": feasible_routes_count,
+        "score_percent": score_percent,
+        "interpretation": (
+            "Значение Score(R) объединяет время, стоимость, совпадение с интересами, "
+            "рейтинг, разнообразие категорий и штраф за приближение к ограничениям. "
+            "Чем выше Score(R), тем более предпочтительным считается маршрут."
+        )
+    }
 
 
 def optimize_route_from_db(
@@ -248,23 +385,15 @@ def optimize_route_from_db(
     """
     Главная функция оптимизации маршрута на основе данных из SQLite.
 
-    Вход:
-    start — начальная точка
-    finish — конечная точка
-    stops — промежуточные точки
-    budget — максимальный бюджет
-    max_time — максимальное время
-    preferences — интересы пользователя
-    priority — приоритет оптимизации
-
     Алгоритм:
     1. Загружаем вершины и рёбра графа из базы данных.
     2. Генерируем все перестановки промежуточных точек.
     3. Для каждого маршрута считаем стоимость, время, рейтинг, предпочтения.
-    4. Отбрасываем маршруты, которые не проходят ограничения.
-    5. Нормализуем показатели.
-    6. Считаем итоговую оценку Score.
-    7. Выбираем маршрут с максимальным Score.
+    4. Дополнительно считаем разнообразие маршрута и штраф за близость к лимитам.
+    5. Отбрасываем маршруты, которые не проходят ограничения.
+    6. Нормализуем показатели.
+    7. Считаем расширенную итоговую оценку Score(R).
+    8. Выбираем маршрут с максимальным Score(R).
     """
 
     graph = load_graph_from_db(db)
@@ -306,10 +435,24 @@ def optimize_route_from_db(
             places=places
         )
 
+        diversity_score = calculate_diversity_score(
+            route=route,
+            places=places
+        )
+
+        penalty_score = calculate_constraint_penalty(
+            total_time=metrics["total_time"],
+            total_cost=metrics["total_cost"],
+            max_time=max_time,
+            budget=budget
+        )
+
         candidate_routes.append({
             "route": route,
             "metrics": metrics,
-            "preference_score": preference_score
+            "preference_score": preference_score,
+            "diversity_score": diversity_score,
+            "penalty_score": penalty_score
         })
 
     feasible_routes = []
@@ -321,12 +464,18 @@ def optimize_route_from_db(
         if total_cost <= budget and total_time <= max_time:
             feasible_routes.append(item)
 
+    algorithm_info = build_algorithm_info(
+        stops_count=len(stops),
+        generated_routes_count=len(candidate_routes)
+    )
+
     if not feasible_routes:
         return {
             "status": "no_solution",
             "message": "Не найден маршрут, который укладывается в заданный бюджет и время.",
             "all_routes": candidate_routes,
-            "data_source": "SQLite database"
+            "data_source": "SQLite database",
+            "algorithm": algorithm_info
         }
 
     min_time = min(item["metrics"]["total_time"] for item in feasible_routes)
@@ -338,6 +487,9 @@ def optimize_route_from_db(
     min_rating = min(item["metrics"]["average_rating"] for item in feasible_routes)
     max_rating = max(item["metrics"]["average_rating"] for item in feasible_routes)
 
+    min_diversity = min(item["diversity_score"] for item in feasible_routes)
+    max_diversity = max(item["diversity_score"] for item in feasible_routes)
+
     weights = get_weights(priority)
 
     for item in feasible_routes:
@@ -346,26 +498,38 @@ def optimize_route_from_db(
         time_norm = normalize(metrics["total_time"], min_time, max_route_time)
         cost_norm = normalize(metrics["total_cost"], min_cost, max_cost)
         rating_norm = normalize(metrics["average_rating"], min_rating, max_rating)
-        preference_norm = item["preference_score"]
+        diversity_norm = normalize(item["diversity_score"], min_diversity, max_diversity)
 
-        score = (
+        preference_norm = item["preference_score"]
+        penalty_score = item["penalty_score"]
+
+        raw_score = (
             weights["time"] * (1 - time_norm) +
             weights["cost"] * (1 - cost_norm) +
             weights["preferences"] * preference_norm +
-            weights["rating"] * rating_norm
+            weights["rating"] * rating_norm +
+            weights["diversity"] * diversity_norm -
+            weights["penalty"] * penalty_score
         )
+
+        score = max(0, min(raw_score, 1))
 
         item["calculation"] = {
             "time_norm": round(time_norm, 3),
             "cost_norm": round(cost_norm, 3),
             "preference_norm": round(preference_norm, 3),
             "rating_norm": round(rating_norm, 3),
+            "diversity_norm": round(diversity_norm, 3),
+            "penalty_score": round(penalty_score, 3),
             "weights": weights,
             "score_formula": (
-                "Score = w_time*(1-T_norm) + "
-                "w_cost*(1-C_norm) + "
-                "w_preferences*P_norm + "
-                "w_rating*Q_norm"
+                "Score(R) = "
+                "w_time*(1-T*) + "
+                "w_cost*(1-C*) + "
+                "w_preferences*P* + "
+                "w_rating*Q* + "
+                "w_diversity*D* - "
+                "lambda*Penalty(R)"
             ),
             "score": round(score, 3),
             "score_percent": round(score * 100, 1)
@@ -378,29 +542,49 @@ def optimize_route_from_db(
 
     best_route = feasible_routes[0]
 
+    calculation_explanation = build_calculation_explanation(
+        best_route=best_route,
+        feasible_routes_count=len(feasible_routes),
+        candidate_routes_count=len(candidate_routes)
+    )
+
     return {
         "status": "success",
         "data_source": "SQLite database",
         "best_route": best_route,
         "alternative_routes": feasible_routes[1:],
         "all_feasible_routes": feasible_routes,
+        "algorithm": algorithm_info,
+        "calculation_explanation": calculation_explanation,
         "math_model": {
             "graph": "G = (V, E)",
             "objective_function": (
-                "Score(R) = w1*(1-T_norm) + "
-                "w2*(1-C_norm) + "
-                "w3*P_norm + "
-                "w4*Q_norm"
+                "Score(R) = "
+                "w1*(1-T*) + "
+                "w2*(1-C*) + "
+                "w3*P* + "
+                "w4*Q* + "
+                "w5*D* - "
+                "lambda*Penalty(R)"
             ),
+            "criteria": {
+                "T*": "нормализованное время маршрута",
+                "C*": "нормализованная стоимость маршрута",
+                "P*": "совпадение маршрута с предпочтениями пользователя",
+                "Q*": "нормализованный рейтинг маршрута",
+                "D*": "разнообразие категорий маршрута",
+                "Penalty(R)": "штраф за приближение к ограничениям"
+            },
             "constraints": [
                 "T(R) <= T_max",
                 "C(R) <= B"
             ],
             "description": (
-                "Маршрут рассматривается как путь в неориентированном "
-                "взвешенном графе. Вершины графа — города, рёбра — возможные "
-                "переезды между ними. Данные о вершинах и рёбрах загружаются "
-                "из SQLite-базы данных."
+                "Маршрут рассматривается как путь в неориентированном взвешенном графе. "
+                "Вершины графа — города, рёбра — возможные переезды между ними. "
+                "Данные о вершинах и рёбрах загружаются из SQLite-базы данных. "
+                "Для оценки маршрута используется расширенная многокритериальная функция "
+                "с учётом времени, стоимости, предпочтений, рейтинга, разнообразия и штрафа."
             )
         }
     }
