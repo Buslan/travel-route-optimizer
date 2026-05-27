@@ -1,0 +1,344 @@
+/* Premium Liquid Glass interaction upgrade */
+
+button[data-modal] {
+    will-change: transform, opacity, filter;
+}
+
+.topic-chip,
+.floating-formula-card,
+.graph-node {
+    position: relative;
+}
+
+/* Чтобы стрелки и блики не улетали за пределы карточек */
+.topic-chip,
+.floating-formula-card,
+.graph-node {
+    overflow: hidden;
+}
+
+/* Маленькая радужная стрелка-подсказка */
+.topic-chip::after,
+.floating-formula-card::after,
+.graph-node::after {
+    content: "↗";
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: 800;
+    color: rgba(51, 65, 85, 0.78);
+
+    background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.42) 36%, transparent 70%),
+        conic-gradient(
+            from 160deg,
+            rgba(191, 219, 254, 0.58),
+            rgba(233, 213, 255, 0.52),
+            rgba(220, 252, 231, 0.42),
+            rgba(254, 249, 195, 0.40),
+            rgba(191, 219, 254, 0.58)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.82);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        0 10px 26px rgba(31, 41, 55, 0.08);
+
+    backdrop-filter: blur(18px) saturate(1.45);
+    -webkit-backdrop-filter: blur(18px) saturate(1.45);
+
+    opacity: 0.78;
+    transform: translate3d(0, 0, 0) scale(0.96);
+    transition:
+        transform 0.36s cubic-bezier(.16, 1, .3, 1),
+        opacity 0.28s ease,
+        box-shadow 0.28s ease;
+    z-index: 5;
+}
+
+/* Убираем конфликт со старой decorative after */
+.floating-formula-card::after {
+    inset: auto;
+    right: 14px;
+    top: 14px;
+    border-radius: 999px;
+}
+
+.graph-node::after {
+    right: 12px;
+    top: 12px;
+}
+
+.topic-chip:hover::after,
+.floating-formula-card:hover::after,
+.graph-node:hover::after {
+    opacity: 1;
+    transform: translate3d(2px, -2px, 0) scale(1.06) rotate(7deg);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 16px 36px rgba(31, 41, 55, 0.13);
+}
+
+/* Более плавное наведение */
+.topic-chip {
+    transform: translate3d(0, 0, 0);
+    transition:
+        transform 0.42s cubic-bezier(.16, 1, .3, 1),
+        filter 0.34s ease,
+        box-shadow 0.34s ease;
+}
+
+.topic-chip:hover {
+    transform: translate3d(-5px, -3px, 0) scale(1.01);
+    filter: saturate(1.06);
+}
+
+.floating-formula-card {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transition:
+        transform 0.55s cubic-bezier(.16, 1, .3, 1),
+        filter 0.34s ease,
+        box-shadow 0.34s ease,
+        opacity 0.34s ease;
+}
+
+.card-front:hover {
+    transform: translate3d(0, -10px, 0) rotate(-1deg) scale(1.025);
+}
+
+.card-middle:hover {
+    transform: translate3d(0, -10px, 0) rotate(3deg) scale(1.025);
+}
+
+.card-back:hover {
+    transform: translate3d(0, -10px, 0) rotate(5deg) scale(1.025);
+}
+
+.graph-node {
+    transform: translate3d(0, 0, 0);
+    transition:
+        transform 0.42s cubic-bezier(.16, 1, .3, 1),
+        filter 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.graph-node:hover {
+    transform: translate3d(0, -8px, 0) scale(1.035);
+    filter: saturate(1.08);
+}
+
+/* Мягкое дыхание стрелок */
+@keyframes arrowBreath {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(0.96);
+        opacity: 0.66;
+    }
+
+    50% {
+        transform: translate3d(1px, -1px, 0) scale(1.015);
+        opacity: 0.92;
+    }
+}
+
+.topic-chip::after,
+.floating-formula-card::after {
+    animation: arrowBreath 3.4s ease-in-out infinite;
+}
+
+.topic-chip:hover::after,
+.floating-formula-card:hover::after,
+.graph-node:hover::after {
+    animation: none;
+}
+
+/* Исправление вылета правой колонки */
+.interactive-zone {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+}
+
+.model-actions {
+    min-width: 0;
+    width: 100%;
+}
+
+.topic-chip {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* На средних экранах переносим плашки вниз, чтобы ничего не обрезалось */
+@media (max-width: 1280px) {
+    .interactive-zone {
+        grid-template-columns: 1fr;
+    }
+
+    .model-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .model-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .topic-chip::after,
+    .floating-formula-card::after,
+    .graph-node::after {
+        width: 30px;
+        height: 30px;
+        right: 12px;
+        top: 12px;
+        font-size: 13px;
+    }
+}
+
+/* Улучшенная модалка: не display none, а плавное появление */
+.modal-overlay {
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.34s ease,
+        visibility 0.34s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-overlay.is-closing {
+    opacity: 0;
+    visibility: visible;
+    pointer-events: none;
+}
+
+.modal-backdrop {
+    opacity: 0;
+    transition:
+        opacity 0.42s ease,
+        backdrop-filter 0.42s ease,
+        -webkit-backdrop-filter 0.42s ease;
+}
+
+.modal-overlay.active .modal-backdrop {
+    opacity: 1;
+}
+
+/* Выпадение окна */
+.modal-glass-card {
+    opacity: 0;
+    transform:
+        translate3d(0, 34px, 0)
+        scale(0.92)
+        rotateX(5deg);
+
+    filter: blur(10px);
+    transform-origin: 50% 46%;
+
+    transition:
+        opacity 0.48s cubic-bezier(.16, 1, .3, 1),
+        transform 0.58s cubic-bezier(.16, 1, .3, 1),
+        filter 0.42s ease;
+
+    animation: none;
+    will-change: transform, opacity, filter;
+}
+
+.modal-overlay.active .modal-glass-card {
+    opacity: 1;
+    transform:
+        translate3d(0, 0, 0)
+        scale(1)
+        rotateX(0deg);
+
+    filter: blur(0);
+}
+
+.modal-overlay.is-closing .modal-glass-card {
+    opacity: 0;
+    transform:
+        translate3d(0, 24px, 0)
+        scale(0.96)
+        rotateX(2deg);
+
+    filter: blur(8px);
+}
+
+/* Внутренний контент появляется каскадом */
+.modal-kicker,
+.modal-content h2,
+.modal-formula,
+.modal-content p,
+.modal-definition-grid {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+}
+
+.modal-overlay.active .modal-kicker {
+    animation: modalContentIn 0.42s 0.08s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.modal-overlay.active .modal-content h2 {
+    animation: modalContentIn 0.48s 0.13s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.modal-overlay.active .modal-formula {
+    animation: modalContentIn 0.52s 0.20s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.modal-overlay.active .modal-content p {
+    animation: modalContentIn 0.52s 0.27s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.modal-overlay.active .modal-definition-grid {
+    animation: modalContentIn 0.52s 0.34s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+@keyframes modalContentIn {
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* Акцент при нажатии */
+.topic-chip:active,
+.floating-formula-card:active,
+.graph-node:active {
+    transform: scale(0.985);
+}
+
+/* Safari / слабые устройства */
+@media (prefers-reduced-motion: reduce) {
+    .topic-chip,
+    .floating-formula-card,
+    .graph-node,
+    .modal-overlay,
+    .modal-backdrop,
+    .modal-glass-card {
+        transition: none;
+        animation: none;
+    }
+
+    .topic-chip::after,
+    .floating-formula-card::after {
+        animation: none;
+    }
+}

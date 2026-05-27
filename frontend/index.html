@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Route Optimizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+<div class="page-shell">
+
+    <header class="navbar glass-panel">
+        <div class="nav-title">Travel Route</div>
+
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Главная</a>
+            <a href="planner.html" data-i18n="nav_planner">Планировщик</a>
+            <a href="result.html" data-i18n="nav_result">Результат</a>
+            <a href="about.html" data-i18n="nav_model">Модель</a>
+
+            <div class="lang-toggle">
+                <button class="active" data-lang="ru">RU</button>
+                <button data-lang="en">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="hero-section">
+
+        <section class="hero-content reveal">
+            <div class="eyebrow" data-i18n="hero_eyebrow">
+                Математическое планирование путешествий
+            </div>
+
+            <h1 data-i18n="hero_title">
+                Постройте оптимальный маршрут
+                <span>через несколько точек</span>
+            </h1>
+
+            <p class="hero-description" data-i18n="hero_description">
+                Веб-приложение подбирает маршрут путешествия на основе графовой модели,
+                ограничений по времени и бюджету, а также личных предпочтений пользователя.
+            </p>
+
+            <div class="hero-actions reveal reveal-delay-1">
+                <a href="planner.html" class="glass-button primary-button" data-i18n="hero_start">
+                    Начать планирование
+                </a>
+                <a href="about.html" class="glass-button secondary-button" data-i18n="hero_model">
+                    Посмотреть модель
+                </a>
+            </div>
+
+            <div class="stats-row reveal reveal-delay-2">
+                <div class="stat-card glass-panel">
+                    <span data-i18n="stat_criteria_label">Критерии</span>
+                    <strong>4</strong>
+                    <p data-i18n="stat_criteria_text">
+                        время, стоимость, интересы, рейтинг
+                    </p>
+                </div>
+
+                <div class="stat-card glass-panel">
+                    <span data-i18n="stat_model_label">Модель</span>
+                    <strong>G = (V, E)</strong>
+                    <p data-i18n="stat_model_text">
+                        взвешенный граф маршрута
+                    </p>
+                </div>
+
+                <div class="stat-card glass-panel">
+                    <span data-i18n="stat_score_label">Оценка</span>
+                    <strong>Score</strong>
+                    <p data-i18n="stat_score_text">
+                        целевая функция маршрута
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="hero-visual glass-panel reveal reveal-delay-3">
+            <div class="map-card">
+                <div class="map-header">
+                    <div>
+                        <span class="small-label">Route Preview</span>
+                        <h2 data-i18n="route_preview_title">
+                            Амстердам → Роттердам
+                        </h2>
+                    </div>
+
+                    <span class="score-badge">91/100</span>
+                </div>
+
+                <div class="abstract-map">
+                    <div class="liquid-orb"></div>
+                    <div class="route-line"></div>
+
+                    <div class="map-point point-a">
+                        <span></span>
+                        <p data-i18n="city_amsterdam">Амстердам</p>
+                    </div>
+
+                    <div class="map-point point-b">
+                        <span></span>
+                        <p data-i18n="city_utrecht">Утрехт</p>
+                    </div>
+
+                    <div class="map-point point-c">
+                        <span></span>
+                        <p data-i18n="city_leiden">Лейден</p>
+                    </div>
+
+                    <div class="map-point point-d">
+                        <span></span>
+                        <p data-i18n="city_rotterdam">Роттердам</p>
+                    </div>
+                </div>
+
+                <div class="summary-grid">
+                    <div>
+                        <span data-i18n="summary_time">Время</span>
+                        <strong>18.4 ч</strong>
+                    </div>
+
+                    <div>
+                        <span data-i18n="summary_cost">Стоимость</span>
+                        <strong>$214 / ₽19 260</strong>
+                    </div>
+
+                    <div>
+                        <span data-i18n="summary_stops">Остановки</span>
+                        <strong>3</strong>
+                    </div>
+
+                    <div>
+                        <span data-i18n="summary_interests">Интересы</span>
+                        <strong>87%</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

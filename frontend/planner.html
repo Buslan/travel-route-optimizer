@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Планировщик маршрута — Travel Route</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/planner.css">
+</head>
+<body>
+
+<div class="page-shell">
+
+    <header class="navbar glass-panel">
+        <div class="nav-title">Travel Route</div>
+
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Главная</a>
+            <a href="planner.html" data-i18n="nav_planner">Планировщик</a>
+            <a href="result.html" data-i18n="nav_result">Результат</a>
+            <a href="about.html" data-i18n="nav_model">Модель</a>
+
+            <div class="lang-toggle">
+                <button class="active" data-lang="ru" type="button">RU</button>
+                <button data-lang="en" type="button">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="planner-layout">
+
+        <section class="planner-panel glass-panel reveal">
+            <div class="section-heading">
+                <span class="eyebrow" data-i18n="planner_eyebrow">
+                    Параметры оптимизации
+                </span>
+
+                <h1 data-i18n="planner_title">
+                    Настройте маршрут
+                    <span>по вашим ограничениям</span>
+                </h1>
+
+                <p data-i18n="planner_description">
+                    Выберите начальную точку, конечный город, промежуточные остановки,
+                    бюджет, лимит времени и приоритет оптимизации.
+                </p>
+            </div>
+
+            <form class="route-form" id="routeForm">
+
+                <div class="form-grid">
+                    <label class="input-group">
+                        <span data-i18n="field_start">Начальная точка</span>
+                        <select id="start" name="start">
+                            <option value="Moscow" data-city="Moscow">Москва</option>
+                            <option value="Saint Petersburg" data-city="Saint Petersburg">Санкт-Петербург</option>
+                            <option value="Smolensk" data-city="Smolensk">Смоленск</option>
+                            <option value="Paris" data-city="Paris">Париж</option>
+                            <option value="New York" data-city="New York">Нью-Йорк</option>
+                            <option value="Sochi" data-city="Sochi">Сочи</option>
+                            <option value="Tambov" data-city="Tambov">Тамбов</option>
+                            <option value="Berlin" data-city="Berlin">Берлин</option>
+                            <option value="Gelendzhik" data-city="Gelendzhik">Геленджик</option>
+                            <option value="Istanbul" data-city="Istanbul">Стамбул</option>
+                            <option value="Magadan" data-city="Magadan">Магадан</option>
+                        </select>
+                    </label>
+
+                    <label class="input-group">
+                        <span data-i18n="field_finish">Конечная точка</span>
+                        <select id="finish" name="finish">
+                            <option value="Saint Petersburg" data-city="Saint Petersburg">Санкт-Петербург</option>
+                            <option value="Moscow" data-city="Moscow">Москва</option>
+                            <option value="Smolensk" data-city="Smolensk">Смоленск</option>
+                            <option value="Paris" data-city="Paris">Париж</option>
+                            <option value="New York" data-city="New York">Нью-Йорк</option>
+                            <option value="Sochi" data-city="Sochi">Сочи</option>
+                            <option value="Tambov" data-city="Tambov">Тамбов</option>
+                            <option value="Berlin" data-city="Berlin">Берлин</option>
+                            <option value="Gelendzhik" data-city="Gelendzhik">Геленджик</option>
+                            <option value="Istanbul" data-city="Istanbul">Стамбул</option>
+                            <option value="Magadan" data-city="Magadan">Магадан</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <span data-i18n="field_stops">Промежуточные точки</span>
+
+                    <div class="checkbox-grid">
+                        <label>
+                            <input type="checkbox" name="stops" value="Smolensk" checked>
+                            <span data-city="Smolensk">Смоленск</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Berlin" checked>
+                            <span data-city="Berlin">Берлин</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Paris" checked>
+                            <span data-city="Paris">Париж</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Istanbul">
+                            <span data-city="Istanbul">Стамбул</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Sochi">
+                            <span data-city="Sochi">Сочи</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Gelendzhik">
+                            <span data-city="Gelendzhik">Геленджик</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Tambov">
+                            <span data-city="Tambov">Тамбов</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="Magadan">
+                            <span data-city="Magadan">Магадан</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="stops" value="New York">
+                            <span data-city="New York">Нью-Йорк</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <label class="input-group">
+                        <span data-i18n="field_budget">Бюджет, $</span>
+                        <input id="budget" name="budget" type="number" value="2500" min="50">
+                    </label>
+
+                    <label class="input-group">
+                        <span data-i18n="field_time">Максимальное время, ч</span>
+                        <input id="maxTime" name="maxTime" type="number" value="120" min="1">
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <span data-i18n="field_preferences">Интересы пользователя</span>
+
+                    <div class="checkbox-grid">
+                        <label>
+                            <input type="checkbox" name="preferences" value="culture" checked>
+                            <span data-i18n="pref_culture">Культура</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="architecture" checked>
+                            <span data-i18n="pref_architecture">Архитектура</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="food">
+                            <span data-i18n="pref_food">Еда</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="history">
+                            <span data-i18n="pref_history">История</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="sea">
+                            <span data-i18n="pref_sea">Море</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="modern">
+                            <span data-i18n="pref_modern">Современность</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="nature">
+                            <span data-i18n="pref_nature">Природа</span>
+                        </label>
+
+                        <label>
+                            <input type="checkbox" name="preferences" value="art">
+                            <span data-i18n="pref_art">Искусство</span>
+                        </label>
+                    </div>
+                </div>
+
+                <label class="input-group">
+                    <span data-i18n="field_priority">Приоритет оптимизации</span>
+
+                    <select id="priority" name="priority">
+                        <option value="balanced" data-i18n="priority_balanced">Сбалансированный</option>
+                        <option value="fast" data-i18n="priority_fast">Минимум времени</option>
+                        <option value="cheap" data-i18n="priority_cheap">Минимум стоимости</option>
+                        <option value="preferences" data-i18n="priority_preferences">Максимум интересов</option>
+                    </select>
+                </label>
+
+                <button type="submit" class="glass-button submit-button" data-i18n="button_optimize">
+                    Рассчитать оптимальный маршрут
+                </button>
+
+            </form>
+        </section>
+
+        <section class="planner-preview glass-panel reveal reveal-delay-1">
+            <div class="preview-top">
+                <div>
+                    <span class="small-label">Optimization Preview</span>
+                    <h2 data-i18n="preview_title">Графовая модель маршрута</h2>
+                </div>
+
+                <span class="score-badge">G = (V, E)</span>
+            </div>
+
+            <div class="planner-map">
+                <div class="liquid-orb"></div>
+                <div class="planner-route-line line-one"></div>
+                <div class="planner-route-line line-two"></div>
+                <div class="planner-route-line line-three"></div>
+
+                <div class="map-node node-start">
+                    <span></span>
+                    <p data-city="Moscow">Москва</p>
+                </div>
+
+                <div class="map-node node-utrecht">
+                    <span></span>
+                    <p data-city="Smolensk">Смоленск</p>
+                </div>
+
+                <div class="map-node node-hague">
+                    <span></span>
+                    <p data-city="Berlin">Берлин</p>
+                </div>
+
+                <div class="map-node node-leiden">
+                    <span></span>
+                    <p data-city="Paris">Париж</p>
+                </div>
+
+                <div class="map-node node-finish">
+                    <span></span>
+                    <p data-city="Saint Petersburg">Санкт-Петербург</p>
+                </div>
+            </div>
+
+            <div class="formula-card glass-panel">
+                <span data-i18n="formula_label">Целевая функция</span>
+                <strong>Score(R)</strong>
+                <p>
+                    Score = w₁(1 − T_norm) + w₂(1 − C_norm) + w₃P_norm + w₄Q_norm
+                </p>
+            </div>
+
+            <div class="mini-summary">
+                <div>
+                    <span data-i18n="summary_budget">Бюджет</span>
+                    <strong>$2500 / ₽225 000</strong>
+                </div>
+
+                <div>
+                    <span data-i18n="summary_limit">Лимит времени</span>
+                    <strong>120 ч</strong>
+                </div>
+
+                <div>
+                    <span data-i18n="summary_method">Метод</span>
+                    <strong data-i18n="summary_method_value">Перебор перестановок</strong>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/planner.js"></script>
+</body>
+</html>

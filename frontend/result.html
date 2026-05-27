@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Результат оптимизации — Travel Route</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/result.css">
+    <link rel="stylesheet" href="css/liquid-upgrade.css">
+</head>
+<body>
+
+<div class="result-background-layer">
+    <div class="result-blob blob-result-one"></div>
+    <div class="result-blob blob-result-two"></div>
+    <div class="result-blob blob-result-three"></div>
+</div>
+
+<div class="page-shell result-page">
+
+    <header class="navbar glass-panel">
+        <div class="nav-title">Travel Route</div>
+
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Главная</a>
+            <a href="planner.html" data-i18n="nav_planner">Планировщик</a>
+            <a href="result.html" data-i18n="nav_result">Результат</a>
+            <a href="about.html" data-i18n="nav_model">Модель</a>
+
+            <div class="lang-toggle">
+                <button class="active" data-lang="ru" type="button">RU</button>
+                <button data-lang="en" type="button">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="premium-result-layout">
+
+        <section class="result-intro glass-panel reveal">
+            <div class="result-intro-copy">
+                <span class="eyebrow">Результат оптимизации</span>
+
+                <h1>
+                    Лучший маршрут
+                    <span>по функции Score(R)</span>
+                </h1>
+
+                <p id="resultExplanation">
+                    Система сравнила допустимые маршруты, рассчитала стоимость, время,
+                    предпочтения и рейтинг, а затем выбрала вариант с максимальной оценкой.
+                </p>
+
+                <div class="result-actions">
+                    <a href="planner.html" class="glass-button">Изменить параметры</a>
+                    <button class="glass-button" type="button" data-result-modal="model">
+                        Как считалось
+                    </button>
+                </div>
+            </div>
+
+            <div class="result-score-stack">
+                <div class="score-main-card">
+                    <span>Score(R)</span>
+                    <strong id="scorePercent">—</strong>
+                    <small>итоговая оценка маршрута</small>
+                </div>
+
+                <div class="score-mini-card">
+                    <span>status</span>
+                    <strong id="statusText">ready</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="route-stage-grid">
+
+            <div class="route-stage glass-panel reveal reveal-delay-1">
+                <div class="stage-header">
+                    <div>
+                        <span class="small-label">Best Route</span>
+                        <h2 id="routeTitle">Маршрут не рассчитан</h2>
+                    </div>
+
+                    <button class="stage-chip" type="button" data-result-modal="route">
+                        Подробнее ↗
+                    </button>
+                </div>
+
+                <div class="route-visual-stage">
+                    <div class="route-liquid-orb"></div>
+                    <div class="route-line-visual"></div>
+                    <div id="routeNodes" class="route-nodes"></div>
+                </div>
+
+                <div class="route-path" id="routePath"></div>
+            </div>
+
+            <div class="metrics-panel glass-panel reveal reveal-delay-2">
+                <span class="small-label">Route Metrics</span>
+                <h2>Показатели маршрута</h2>
+
+                <div class="metrics-grid">
+                    <button class="metric-card" type="button" data-result-modal="time">
+                        <span>Общее время</span>
+                        <strong id="totalTime">—</strong>
+                        <small id="timeDetails">—</small>
+                    </button>
+
+                    <button class="metric-card" type="button" data-result-modal="cost">
+                        <span>Стоимость</span>
+                        <strong id="totalCost">—</strong>
+                        <small id="costDetails">—</small>
+                    </button>
+
+                    <button class="metric-card" type="button" data-result-modal="distance">
+                        <span>Расстояние</span>
+                        <strong id="distance">—</strong>
+                        <small>по рёбрам графа</small>
+                    </button>
+
+                    <button class="metric-card" type="button" data-result-modal="rating">
+                        <span>Средний рейтинг</span>
+                        <strong id="averageRating">—</strong>
+                        <small>качество точек</small>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="math-result-grid">
+
+            <div class="formula-result-card glass-panel reveal reveal-delay-2">
+                <span class="small-label">Objective Function</span>
+                <h2>Расчёт Score(R)</h2>
+
+                <div class="result-formula">
+                    Score(R) = w₁(1 − T*) + w₂(1 − C*) + w₃P* + w₄Q*
+                </div>
+
+                <div class="norm-grid">
+                    <button type="button" data-result-modal="normalization">
+                        <span>T*</span>
+                        <strong id="timeNorm">—</strong>
+                    </button>
+
+                    <button type="button" data-result-modal="normalization">
+                        <span>C*</span>
+                        <strong id="costNorm">—</strong>
+                    </button>
+
+                    <button type="button" data-result-modal="preferences">
+                        <span>P*</span>
+                        <strong id="preferenceNorm">—</strong>
+                    </button>
+
+                    <button type="button" data-result-modal="rating">
+                        <span>Q*</span>
+                        <strong id="ratingNorm">—</strong>
+                    </button>
+                </div>
+            </div>
+
+            <div class="weights-result-card glass-panel reveal reveal-delay-3">
+                <span class="small-label">Criteria Weights</span>
+                <h2>Веса критериев</h2>
+                <p>
+                    Веса меняются в зависимости от выбранного режима оптимизации:
+                    быстрее, дешевле, сбалансированно или по интересам.
+                </p>
+
+                <div id="weightsList" class="weights-list"></div>
+            </div>
+
+        </section>
+
+        <section class="alternatives-section glass-panel reveal reveal-delay-3">
+            <div class="alternatives-header">
+                <div>
+                    <span class="small-label">Alternatives</span>
+                    <h2>Альтернативные допустимые маршруты</h2>
+                </div>
+
+                <button class="stage-chip" type="button" data-result-modal="alternatives">
+                    Зачем они нужны ↗
+                </button>
+            </div>
+
+            <div id="alternativesList" class="alternatives-list"></div>
+        </section>
+
+    </main>
+
+</div>
+
+<div class="modal-overlay" id="resultModal">
+    <div class="modal-backdrop" data-close-result-modal></div>
+
+    <section class="modal-glass-card">
+        <button class="modal-close" data-close-result-modal type="button">×</button>
+        <div class="modal-content" id="resultModalContent"></div>
+    </section>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/result.js"></script>
+</body>
+</html>

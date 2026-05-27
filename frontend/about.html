@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Математическая модель — Travel Route</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/about.css">
+    <link rel="stylesheet" href="css/liquid-upgrade.css">
+    <link rel="stylesheet" href="css/graph-align.css">
+</head>
+<body>
+
+<div class="model-background-layer">
+    <div class="liquid-blob blob-one"></div>
+    <div class="liquid-blob blob-two"></div>
+    <div class="liquid-blob blob-three"></div>
+</div>
+
+<div class="page-shell model-page">
+
+    <header class="navbar glass-panel">
+        <div class="nav-title">Travel Route</div>
+
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Главная</a>
+            <a href="planner.html" data-i18n="nav_planner">Планировщик</a>
+            <a href="result.html" data-i18n="nav_result">Результат</a>
+            <a href="about.html" data-i18n="nav_model">Модель</a>
+
+            <div class="lang-toggle">
+                <button class="active" data-lang="ru" type="button">RU</button>
+                <button data-lang="en" type="button">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="liquid-model-layout">
+
+        <section class="model-intro glass-panel reveal">
+            <div class="intro-copy">
+                <span class="eyebrow">Математическая основа проекта</span>
+
+                <h1>
+                    Оптимизация маршрута
+                    <span>как задача на графе</span>
+                </h1>
+
+                <p>
+                    Маршрут рассматривается как путь во взвешенном графе. Система сравнивает
+                    допустимые варианты, рассчитывает время, стоимость, предпочтения и рейтинг,
+                    а затем выбирает маршрут с максимальным значением целевой функции.
+                </p>
+            </div>
+
+            <div class="intro-glass-stack">
+                <button class="floating-formula-card card-front" data-modal="objective" type="button">
+                    <span>Objective</span>
+                    <strong>Score(R)</strong>
+                    <small>открыть формулу</small>
+                </button>
+
+                <button class="floating-formula-card card-middle" data-modal="graph" type="button">
+                    <span>Graph</span>
+                    <strong>G = (V, E)</strong>
+                    <small>графовая модель</small>
+                </button>
+
+                <button class="floating-formula-card card-back" data-modal="constraints" type="button">
+                    <span>Limits</span>
+                    <strong>T(R) ≤ T<sub>max</sub></strong>
+                    <small>C(R) ≤ B</small>
+                </button>
+            </div>
+        </section>
+
+        <section class="interactive-zone">
+
+            <div class="glass-map-stage glass-panel reveal reveal-delay-1">
+                <div class="stage-light"></div>
+
+                <div class="graph-orbit orbit-one"></div>
+                <div class="graph-orbit orbit-two"></div>
+
+                <div class="graph-edge edge-a"></div>
+                <div class="graph-edge edge-b"></div>
+                <div class="graph-edge edge-c"></div>
+                <div class="graph-edge edge-d"></div>
+
+                <button class="graph-node node-a" data-modal="graph" type="button">
+                    <span></span>
+                    <strong>V</strong>
+                    <small>вершины</small>
+                </button>
+
+                <button class="graph-node node-b" data-modal="weights" type="button">
+                    <span></span>
+                    <strong>wᵢ</strong>
+                    <small>веса</small>
+                </button>
+
+                <button class="graph-node node-c" data-modal="objective" type="button">
+                    <span></span>
+                    <strong>Score</strong>
+                    <small>оценка</small>
+                </button>
+
+                <button class="graph-node node-d" data-modal="algorithm" type="button">
+                    <span></span>
+                    <strong>Π</strong>
+                    <small>перестановки</small>
+                </button>
+
+                <button class="graph-node node-e" data-modal="normalization" type="button">
+                    <span></span>
+                    <strong>x*</strong>
+                    <small>нормализация</small>
+                </button>
+            </div>
+
+            <div class="model-actions reveal reveal-delay-2">
+                <button class="topic-chip glass-panel" data-modal="graph" type="button">
+                    <span>01</span>
+                    <strong>Графовая модель</strong>
+                    <small>G = (V, E)</small>
+                </button>
+
+                <button class="topic-chip glass-panel" data-modal="objective" type="button">
+                    <span>02</span>
+                    <strong>Целевая функция</strong>
+                    <small>Score(R)</small>
+                </button>
+
+                <button class="topic-chip glass-panel" data-modal="constraints" type="button">
+                    <span>03</span>
+                    <strong>Ограничения</strong>
+                    <small>бюджет и время</small>
+                </button>
+
+                <button class="topic-chip glass-panel" data-modal="algorithm" type="button">
+                    <span>04</span>
+                    <strong>Алгоритм</strong>
+                    <small>перебор маршрутов</small>
+                </button>
+
+                <button class="topic-chip glass-panel" data-modal="weights" type="button">
+                    <span>05</span>
+                    <strong>Веса критериев</strong>
+                    <small>режимы оптимизации</small>
+                </button>
+
+                <button class="topic-chip glass-panel" data-modal="normalization" type="button">
+                    <span>06</span>
+                    <strong>Нормализация</strong>
+                    <small>приведение к [0; 1]</small>
+                </button>
+            </div>
+
+        </section>
+
+        <section class="compact-explanation glass-panel reveal reveal-delay-3">
+            <div>
+                <span class="small-label">Project Logic</span>
+                <h2>Что реально считает программа</h2>
+            </div>
+
+            <div class="logic-grid">
+                <div>
+                    <strong>1</strong>
+                    <span>строит возможные маршруты через выбранные точки</span>
+                </div>
+
+                <div>
+                    <strong>2</strong>
+                    <span>считает время, стоимость и расстояние каждого маршрута</span>
+                </div>
+
+                <div>
+                    <strong>3</strong>
+                    <span>отбрасывает варианты, нарушающие ограничения</span>
+                </div>
+
+                <div>
+                    <strong>4</strong>
+                    <span>выбирает максимум целевой функции Score(R)</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<div class="modal-overlay" id="modelModal">
+    <div class="modal-backdrop" data-close-modal></div>
+
+    <section class="modal-glass-card">
+        <button class="modal-close" data-close-modal type="button">×</button>
+
+        <div class="modal-content" id="modalContent"></div>
+    </section>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/about.js"></script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+.planner-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+    gap: 28px;
+    align-items: start;
+    padding: 46px 0 20px;
+}
+
+.planner-panel,
+.planner-preview {
+    border-radius: 42px;
+    padding: 30px;
+    min-width: 0;
+}
+
+.section-heading h1 {
+    margin: 18px 0 16px;
+    max-width: 680px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: clamp(40px, 5vw, 66px);
+    line-height: 0.98;
+    letter-spacing: -0.065em;
+    font-weight: 500;
+    color: var(--text-heading);
+}
+
+.section-heading h1 span {
+    display: block;
+    color: #64748b;
+    font-style: italic;
+}
+
+.section-heading p {
+    max-width: 640px;
+    margin: 0 0 28px;
+    color: var(--text-muted);
+    font-size: 17px;
+    line-height: 1.65;
+}
+
+.route-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.input-group > span {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 750;
+}
+
+/* Важно: стилизуем только number и select, НЕ checkbox */
+.input-group input[type="number"],
+.input-group select {
+    width: 100%;
+    height: 54px;
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    border-radius: 20px;
+    padding: 0 18px;
+    outline: none;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.38));
+    color: var(--text-heading);
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        inset 0 -14px 28px rgba(148, 163, 184, 0.06),
+        0 14px 34px rgba(31, 41, 55, 0.06);
+    backdrop-filter: blur(18px) saturate(1.28);
+    -webkit-backdrop-filter: blur(18px) saturate(1.28);
+    transition: 0.28s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* Красивее select */
+.input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.38)),
+        linear-gradient(45deg, transparent 50%, rgba(71, 85, 105, 0.75) 50%),
+        linear-gradient(135deg, rgba(71, 85, 105, 0.75) 50%, transparent 50%);
+    background-position:
+        0 0,
+        calc(100% - 22px) 24px,
+        calc(100% - 16px) 24px;
+    background-size:
+        auto,
+        6px 6px,
+        6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 46px;
+}
+
+.input-group input[type="number"]:focus,
+.input-group select:focus {
+    border-color: rgba(148, 163, 184, 0.52);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        inset 0 -14px 28px rgba(148, 163, 184, 0.07),
+        0 18px 42px rgba(31, 41, 55, 0.10);
+    transform: translateY(-1px);
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.checkbox-grid label {
+    position: relative;
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    min-height: 54px;
+    padding: 13px 15px;
+    border-radius: 20px;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.30));
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.84),
+        0 12px 26px rgba(31, 41, 55, 0.05);
+    color: var(--text-heading);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.28s cubic-bezier(.16, 1, .3, 1);
+    overflow: hidden;
+}
+
+.checkbox-grid label::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(
+            180px circle at var(--cursor-x) var(--cursor-y),
+            rgba(255, 255, 255, 0.55),
+            transparent 62%
+        );
+    opacity: 0.58;
+    pointer-events: none;
+}
+
+.checkbox-grid label:hover {
+    transform: translateY(-2px);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.36));
+}
+
+.checkbox-grid input[type="checkbox"] {
+    position: relative;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: #64748b;
+    cursor: pointer;
+}
+
+.checkbox-grid label span {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.submit-button {
+    width: 100%;
+    margin-top: 8px;
+    min-height: 58px;
+    cursor: pointer;
+}
+
+.submit-button:disabled {
+    opacity: 0.72;
+    cursor: wait;
+}
+
+.preview-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.preview-top h2 {
+    margin: 0;
+    color: var(--text-heading);
+    font-size: 28px;
+    letter-spacing: -0.05em;
+}
+
+.planner-map {
+    position: relative;
+    height: 390px;
+    margin: 28px 0 18px;
+    border-radius: 34px;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, rgba(248, 250, 252, 0.88), rgba(241, 245, 249, 0.54)),
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 1), transparent 30%),
+        radial-gradient(circle at 72% 66%, rgba(219, 234, 254, 0.68), transparent 28%);
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -24px 54px rgba(148, 163, 184, 0.06);
+}
+
+.planner-map::before,
+.planner-map::after {
+    content: "";
+    position: absolute;
+    inset: 42px;
+    border-radius: 44px;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.planner-map::after {
+    inset: 88px 62px;
+    border-radius: 50%;
+}
+
+.planner-map .liquid-orb {
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    left: 48%;
+    top: 42%;
+    transform: translate(-50%, -50%);
+    background:
+        radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.94), rgba(219, 234, 254, 0.36) 38%, rgba(233, 213, 255, 0.22) 58%, transparent 72%);
+    filter: blur(2px);
+    opacity: 0.88;
+    animation: orbMove 9s ease-in-out infinite;
+}
+
+.planner-route-line {
+    position: absolute;
+    height: 4px;
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(100, 116, 139, 0.08),
+            rgba(71, 85, 105, 0.60),
+            rgba(100, 116, 139, 0.08)
+        );
+    box-shadow: 0 12px 32px rgba(71, 85, 105, 0.20);
+}
+
+.line-one {
+    left: 18%;
+    top: 58%;
+    width: 34%;
+    transform: rotate(-25deg);
+}
+
+.line-two {
+    left: 42%;
+    top: 47%;
+    width: 28%;
+    transform: rotate(18deg);
+}
+
+.line-three {
+    right: 15%;
+    top: 42%;
+    width: 25%;
+    transform: rotate(-20deg);
+}
+
+.map-node {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 12px 8px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.96);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 16px 36px rgba(31, 41, 55, 0.10);
+    backdrop-filter: blur(16px);
+    transition: transform 0.3s cubic-bezier(.16, 1, .3, 1);
+}
+
+.map-node:hover {
+    transform: translateY(-4px) scale(1.03);
+}
+
+.map-node span {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #64748b;
+    box-shadow: 0 0 0 6px rgba(100, 116, 139, 0.16);
+}
+
+.map-node p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 750;
+    color: var(--text-heading);
+}
+
+.node-start {
+    left: 10%;
+    top: 62%;
+}
+
+.node-utrecht {
+    left: 33%;
+    top: 38%;
+}
+
+.node-hague {
+    left: 54%;
+    top: 55%;
+}
+
+.node-leiden {
+    right: 18%;
+    top: 32%;
+}
+
+.node-finish {
+    right: 8%;
+    bottom: 24%;
+}
+
+.formula-card {
+    border-radius: 26px;
+    padding: 20px;
+    margin-bottom: 14px;
+}
+
+.formula-card span {
+    color: var(--text-light);
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.formula-card strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-heading);
+    font-size: 25px;
+    letter-spacing: -0.04em;
+}
+
+.formula-card p {
+    margin: 10px 0 0;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-size: 14px;
+}
+
+.mini-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.mini-summary div {
+    min-height: 82px;
+    padding: 16px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.50);
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.82),
+        0 12px 28px rgba(31, 41, 55, 0.06);
+}
+
+.mini-summary span {
+    display: block;
+    color: var(--text-light);
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.mini-summary strong {
+    color: var(--text-heading);
+    font-size: 18px;
+    letter-spacing: -0.04em;
+}
+
+@media (max-width: 1060px) {
+    .planner-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .planner-panel,
+    .planner-preview {
+        border-radius: 30px;
+        padding: 20px;
+    }
+
+    .form-grid,
+    .checkbox-grid,
+    .mini-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .planner-map {
+        height: 320px;
+    }
+}

@@ -1,0 +1,286 @@
+/* Stable connected graph layout for about.html */
+
+.glass-map-stage {
+    position: relative !important;
+    min-height: 620px !important;
+    overflow: hidden !important;
+}
+
+/* Убираем старую рандомную геометрию и собираем схему заново */
+.graph-node {
+    position: absolute !important;
+    width: 132px !important;
+    min-width: 132px !important;
+    height: 88px !important;
+    min-height: 88px !important;
+    z-index: 6 !important;
+}
+
+/* Узлы ставятся по центру своей координаты */
+.node-a {
+    left: 18% !important;
+    top: 30% !important;
+}
+
+.node-b {
+    left: 47% !important;
+    top: 38% !important;
+}
+
+.node-c {
+    left: 76% !important;
+    top: 30% !important;
+}
+
+.node-d {
+    left: 32% !important;
+    top: 70% !important;
+}
+
+.node-e {
+    left: 63% !important;
+    top: 70% !important;
+}
+
+/* Линии полностью пересобраны под новые координаты */
+.graph-edge {
+    position: absolute !important;
+    height: 4px !important;
+    border-radius: 999px !important;
+    z-index: 3 !important;
+    transform-origin: left center !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(100, 116, 139, 0.00),
+            rgba(71, 85, 105, 0.34),
+            rgba(100, 116, 139, 0.00)
+        ) !important;
+    box-shadow:
+        0 12px 30px rgba(71, 85, 105, 0.14) !important;
+}
+
+/* V → wᵢ */
+.edge-a {
+    left: calc(18% + 66px) !important;
+    top: calc(30% + 44px) !important;
+    width: calc(29% - 66px) !important;
+    transform: rotate(15deg) !important;
+}
+
+/* wᵢ → Score */
+.edge-b {
+    left: calc(47% + 66px) !important;
+    top: calc(38% + 44px) !important;
+    width: calc(29% - 66px) !important;
+    transform: rotate(-17deg) !important;
+}
+
+/* wᵢ → Π */
+.edge-c {
+    left: calc(47% + 20px) !important;
+    top: calc(38% + 82px) !important;
+    width: 210px !important;
+    transform: rotate(128deg) !important;
+}
+
+/* wᵢ → x* */
+.edge-d {
+    left: calc(47% + 88px) !important;
+    top: calc(38% + 82px) !important;
+    width: 220px !important;
+    transform: rotate(58deg) !important;
+}
+
+/* Π → x* */
+.glass-map-stage::after {
+    content: "" !important;
+    position: absolute !important;
+    left: calc(32% + 66px) !important;
+    top: calc(70% + 44px) !important;
+    width: calc(31% - 66px) !important;
+    height: 4px !important;
+    border-radius: 999px !important;
+    z-index: 3 !important;
+    pointer-events: none !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(100, 116, 139, 0.00),
+            rgba(71, 85, 105, 0.30),
+            rgba(100, 116, 139, 0.00)
+        ) !important;
+    box-shadow:
+        0 12px 30px rgba(71, 85, 105, 0.12) !important;
+}
+
+/* Свет и орбиты всегда под линиями */
+.stage-light,
+.graph-orbit {
+    z-index: 1 !important;
+}
+
+/* Узлы всегда поверх линий */
+.graph-node {
+    z-index: 6 !important;
+}
+
+.graph-node:hover {
+    z-index: 12 !important;
+}
+
+/* Убираем конфликт hover-transform: пусть карточки не прыгают из схемы */
+.graph-node:hover {
+    transform: translateY(-5px) scale(1.025) !important;
+}
+
+/* Чтобы подписи не ломали карточки */
+.graph-node strong {
+    font-size: 24px !important;
+}
+
+.graph-node small {
+    max-width: 92px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Средние экраны */
+@media (max-width: 1080px) {
+    .glass-map-stage {
+        min-height: 600px !important;
+    }
+
+    .node-a {
+        left: 16% !important;
+        top: 30% !important;
+    }
+
+    .node-b {
+        left: 45% !important;
+        top: 38% !important;
+    }
+
+    .node-c {
+        left: 74% !important;
+        top: 30% !important;
+    }
+
+    .node-d {
+        left: 30% !important;
+        top: 70% !important;
+    }
+
+    .node-e {
+        left: 62% !important;
+        top: 70% !important;
+    }
+
+    .edge-a {
+        left: calc(16% + 66px) !important;
+        top: calc(30% + 44px) !important;
+        width: calc(29% - 66px) !important;
+        transform: rotate(15deg) !important;
+    }
+
+    .edge-b {
+        left: calc(45% + 66px) !important;
+        top: calc(38% + 44px) !important;
+        width: calc(29% - 66px) !important;
+        transform: rotate(-17deg) !important;
+    }
+
+    .edge-c {
+        left: calc(45% + 20px) !important;
+        top: calc(38% + 82px) !important;
+        width: 205px !important;
+        transform: rotate(128deg) !important;
+    }
+
+    .edge-d {
+        left: calc(45% + 88px) !important;
+        top: calc(38% + 82px) !important;
+        width: 215px !important;
+        transform: rotate(58deg) !important;
+    }
+
+    .glass-map-stage::after {
+        left: calc(30% + 66px) !important;
+        top: calc(70% + 44px) !important;
+        width: calc(32% - 66px) !important;
+    }
+}
+
+/* Маленькие экраны */
+@media (max-width: 720px) {
+    .glass-map-stage {
+        min-height: 560px !important;
+    }
+
+    .graph-node {
+        width: 112px !important;
+        min-width: 112px !important;
+        height: 80px !important;
+        min-height: 80px !important;
+    }
+
+    .node-a {
+        left: 8% !important;
+        top: 22% !important;
+    }
+
+    .node-b {
+        left: 38% !important;
+        top: 38% !important;
+    }
+
+    .node-c {
+        left: 68% !important;
+        top: 22% !important;
+    }
+
+    .node-d {
+        left: 16% !important;
+        top: 72% !important;
+    }
+
+    .node-e {
+        left: 60% !important;
+        top: 72% !important;
+    }
+
+    .edge-a {
+        left: calc(8% + 56px) !important;
+        top: calc(22% + 40px) !important;
+        width: calc(30% - 56px) !important;
+        transform: rotate(28deg) !important;
+    }
+
+    .edge-b {
+        left: calc(38% + 56px) !important;
+        top: calc(38% + 40px) !important;
+        width: calc(30% - 56px) !important;
+        transform: rotate(-30deg) !important;
+    }
+
+    .edge-c {
+        left: calc(38% + 10px) !important;
+        top: calc(38% + 76px) !important;
+        width: 190px !important;
+        transform: rotate(124deg) !important;
+    }
+
+    .edge-d {
+        left: calc(38% + 72px) !important;
+        top: calc(38% + 76px) !important;
+        width: 190px !important;
+        transform: rotate(58deg) !important;
+    }
+
+    .glass-map-stage::after {
+        left: calc(16% + 56px) !important;
+        top: calc(72% + 40px) !important;
+        width: calc(44% - 56px) !important;
+    }
+}
